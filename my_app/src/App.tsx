@@ -21,7 +21,7 @@ export const App = () => {
   function generate_image() {
     if (!active || !prompt) return;
     isActive(false);
-    fetch("http://localhost:8000/generate", {
+    fetch("https://kind-tan-tadpole-suit.cyclic.app/generate/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
