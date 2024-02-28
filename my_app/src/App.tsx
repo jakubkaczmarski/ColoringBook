@@ -13,7 +13,6 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import { useState, useRef } from "react";
-import ReactToPrint from "react-to-print";
 
 export const App = () => {
   const [prompt, setPrompt] = useState("");
