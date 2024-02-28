@@ -12,12 +12,14 @@ import {
   Heading,
   Spinner,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import ReactToPrint from "react-to-print";
 
 export const App = () => {
   const [prompt, setPrompt] = useState("");
   const [image, setImage] = useState("");
   const [active, isActive] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   function generate_image() {
     if (!active || !prompt) return;
     isActive(false);
@@ -54,13 +56,41 @@ export const App = () => {
               color="teal"
             />
             {active ? (
-              <Button onClick={generate_image} isActive={active}>
-                Generate
-              </Button>
+              <>
+                <Button onClick={generate_image} isActive={active}>
+                  Generate
+                </Button>
+                <Button
+                  isActive={active}
+                  onClick={() => {
+                    if (image === "") {
+                      return;
+                    }
+                    const iframe = iframeRef.current;
+                    if (!iframe) return;
+
+                    iframe?.contentWindow?.document.open();
+                    iframe?.contentWindow?.document.write(
+                      `<html><head><title>Print Image</title></head><body><img src="${image}" style="width:100%;" /></body></html>`
+                    );
+                    iframe?.contentWindow?.document.close();
+                    iframe?.contentWindow?.print();
+                    iframe?.contentWindow?.document.open();
+                    iframe?.contentWindow?.document.write("");
+                    iframe?.contentWindow?.document.close();
+                  }}
+                >
+                  Print
+                </Button>
+              </>
             ) : (
               <Spinner />
             )}
+
             <Image src={image} alt="" />
+            <Box textAlign="center" fontSize="sm">
+              <iframe ref={iframeRef}></iframe>
+            </Box>
           </VStack>
         </Grid>
       </Box>
